@@ -1,496 +1,426 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CraftStore — Minecraft Server Shop</title>
-<style>
-  *{box-sizing:border-box;margin:0;padding:0}
-  :root{
-    --green:#1D9E75;--green-light:#E1F5EE;--green-dark:#085041;
-    --bg:#0f1117;--bg2:#161b22;--bg3:#1c2230;--bg4:#222b3a;
-    --border:#2a3447;--text:#e6edf3;--text2:#8b949e;--text3:#6e7681;
-    --radius:8px;--font:'Segoe UI',system-ui,sans-serif;
-  }
-  body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:100vh}
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CubexNova Store</title>
 
-  /* NAV */
-  nav{display:flex;align-items:center;justify-content:space-between;padding:0 32px;height:60px;background:var(--bg2);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100}
-  .logo{font-size:20px;font-weight:700;letter-spacing:-0.5px}
-  .logo .accent{color:var(--green)}
-  .nav-right{display:flex;align-items:center;gap:16px}
-  .online-badge{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text2)}
-  .online-dot{width:8px;height:8px;border-radius:50%;background:#3fb950;animation:blink 2s infinite}
-  @keyframes blink{0%,100%{opacity:1}50%{opacity:0.5}}
-  .nav-btn{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:7px 14px;color:var(--text);font-size:13px;cursor:pointer;display:flex;align-items:center;gap:6px}
-  .nav-btn:hover{border-color:var(--green);color:var(--green)}
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
 
-  /* HERO */
-  .hero{text-align:center;padding:60px 20px 40px;background:linear-gradient(180deg,#0d1b2a 0%,var(--bg) 100%)}
-  .hero-icon{font-size:48px;margin-bottom:16px}
-  .hero h1{font-size:36px;font-weight:800;letter-spacing:-1px;margin-bottom:10px}
-  .hero h1 span{color:var(--green)}
-  .hero p{font-size:16px;color:var(--text2);max-width:480px;margin:0 auto 24px}
-  .hero-stats{display:flex;gap:32px;justify-content:center;flex-wrap:wrap}
-  .hero-stat{text-align:center}
-  .hero-stat-val{font-size:22px;font-weight:700;color:var(--green)}
-  .hero-stat-label{font-size:12px;color:var(--text3)}
+    body {
+      background: #0f172a;
+      color: white;
+    }
 
-  /* TABS */
-  .tabs{display:flex;gap:2px;padding:0 32px;background:var(--bg2);border-bottom:1px solid var(--border)}
-  .tab{padding:14px 20px;font-size:14px;cursor:pointer;border-bottom:2px solid transparent;color:var(--text2);font-weight:500}
-  .tab:hover{color:var(--text)}
-  .tab.active{border-bottom-color:var(--green);color:var(--text)}
+    header {
+      background: linear-gradient(135deg, #2563eb, #7c3aed);
+      padding: 45px 20px;
+      text-align: center;
+    }
 
-  /* STORE */
-  .section{padding:32px;max-width:1100px;margin:0 auto}
-  .section-title{font-size:14px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:1px;margin-bottom:20px}
-  .pkg-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px}
-  .pkg{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:20px;display:flex;flex-direction:column;transition:border-color 0.2s,transform 0.15s}
-  .pkg:hover{border-color:#3a4a5e;transform:translateY(-2px)}
-  .pkg.featured{border-color:var(--green)}
-  .pkg-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px}
-  .pkg-icon{font-size:32px}
-  .pkg-badge{font-size:11px;padding:3px 8px;border-radius:20px;background:var(--green-light);color:var(--green-dark);font-weight:600}
-  .pkg h3{font-size:17px;font-weight:700;margin-bottom:4px}
-  .pkg-desc{font-size:13px;color:var(--text2);line-height:1.5;margin-bottom:12px}
-  .pkg-perks{list-style:none;margin-bottom:16px;flex:1}
-  .pkg-perks li{font-size:13px;color:var(--text2);padding:4px 0;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--border)}
-  .pkg-perks li:last-child{border-bottom:none}
-  .pkg-perks li::before{content:"✓";color:var(--green);font-weight:700;font-size:12px;flex-shrink:0}
-  .pkg-footer{display:flex;align-items:center;justify-content:space-between;margin-top:auto}
-  .pkg-price{font-size:22px;font-weight:800;color:var(--text)}
-  .pkg-price small{font-size:13px;color:var(--text3);font-weight:400}
-  .buy-btn{background:var(--green);color:#fff;border:none;border-radius:var(--radius);padding:9px 18px;font-size:14px;font-weight:600;cursor:pointer;transition:background 0.15s}
-  .buy-btn:hover{background:#16856a}
-  .pkg.featured .buy-btn{background:var(--green)}
+    header h1 {
+      font-size: 42px;
+      margin-bottom: 10px;
+    }
 
-  /* MODAL */
-  .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:1000;align-items:center;justify-content:center;padding:20px}
-  .modal-overlay.open{display:flex}
-  .modal{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:28px;width:100%;max-width:420px;max-height:90vh;overflow-y:auto}
-  .modal-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px}
-  .modal-title{font-size:18px;font-weight:700}
-  .modal-close{background:none;border:none;color:var(--text3);font-size:22px;cursor:pointer;line-height:1}
-  .modal-close:hover{color:var(--text)}
-  .field-label{font-size:12px;color:var(--text2);margin-bottom:6px;font-weight:500}
-  .field-input{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:10px 14px;color:var(--text);font-size:14px;margin-bottom:16px;outline:none}
-  .field-input:focus{border-color:var(--green)}
-  .coin-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
-  .coin-opt{border:1px solid var(--border);border-radius:var(--radius);padding:12px;cursor:pointer;text-align:center;transition:border-color 0.15s}
-  .coin-opt:hover{border-color:#3a4a5e}
-  .coin-opt.sel{border-color:var(--green);background:rgba(29,158,117,0.08)}
-  .coin-sym{font-size:24px;margin-bottom:4px}
-  .coin-name{font-size:13px;font-weight:600;color:var(--text)}
-  .coin-sub{font-size:11px;color:var(--text3)}
-  .pay-box{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:14px}
-  .pay-box-label{font-size:11px;color:var(--text3);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px}
-  .pay-addr{font-family:'Courier New',monospace;font-size:12px;color:var(--text);word-break:break-all;line-height:1.6}
-  .pay-divider{border:none;border-top:1px solid var(--border);margin:12px 0}
-  .pay-amount-row{display:flex;justify-content:space-between;align-items:center}
-  .pay-amount{font-size:20px;font-weight:800;color:var(--green)}
-  .pay-usd{font-size:12px;color:var(--text3)}
-  .copy-btn{background:var(--bg4);border:1px solid var(--border);border-radius:6px;padding:6px 12px;color:var(--text2);font-size:12px;cursor:pointer;display:flex;align-items:center;gap:5px}
-  .copy-btn:hover{color:var(--text);border-color:#3a4a5e}
-  .copy-btn.copied{color:var(--green);border-color:var(--green)}
-  .status-bar{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text2);margin-bottom:14px}
-  .status-pulse{width:9px;height:9px;border-radius:50%;background:#d29922;animation:pulse 1.5s infinite}
-  @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
-  .confirm-btn{width:100%;padding:13px;border-radius:var(--radius);border:none;background:var(--green);color:#fff;font-size:15px;font-weight:700;cursor:pointer;margin-bottom:10px}
-  .confirm-btn:hover{background:#16856a}
-  .modal-note{font-size:11px;color:var(--text3);text-align:center;line-height:1.5}
+    header p {
+      color: #e0e7ff;
+      font-size: 18px;
+    }
 
-  /* SUCCESS */
-  .success-screen{text-align:center;padding:20px 0}
-  .success-icon{font-size:56px;margin-bottom:12px}
-  .success-title{font-size:22px;font-weight:800;margin-bottom:8px;color:#3fb950}
-  .success-sub{font-size:14px;color:var(--text2);line-height:1.6}
+    nav {
+      background: #020617;
+      padding: 15px 20px;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
 
-  /* WALLET VIEW */
-  .wallet-section{padding:32px;max-width:700px;margin:0 auto}
-  .wallet-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:24px;margin-bottom:20px}
-  .wallet-total-label{font-size:13px;color:var(--text3);margin-bottom:6px}
-  .wallet-total{font-size:36px;font-weight:800;color:var(--green)}
-  .wallet-sub{font-size:13px;color:var(--text2);margin-top:4px}
-  .tx-list{background:var(--bg2);border:1px solid var(--border);border-radius:12px;overflow:hidden}
-  .tx-header{padding:14px 20px;border-bottom:1px solid var(--border);font-size:13px;font-weight:600;color:var(--text2)}
-  .tx-item{display:flex;justify-content:space-between;align-items:center;padding:14px 20px;border-bottom:1px solid var(--border)}
-  .tx-item:last-child{border-bottom:none}
-  .tx-left{}
-  .tx-pkg{font-size:14px;font-weight:600}
-  .tx-meta{font-size:12px;color:var(--text3);margin-top:2px}
-  .tx-right{text-align:right}
-  .tx-amt{font-size:15px;font-weight:700;color:#3fb950}
-  .tx-coin{font-size:11px;color:var(--text3);margin-top:2px}
-  .empty{padding:40px;text-align:center;color:var(--text3);font-size:14px}
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+    }
 
-  /* ADMIN */
-  .admin-section{padding:32px;max-width:800px;margin:0 auto}
-  .admin-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:24px}
-  .admin-stat{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:16px}
-  .admin-stat-label{font-size:12px;color:var(--text3);margin-bottom:6px}
-  .admin-stat-val{font-size:26px;font-weight:800}
-  .admin-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:20px}
-  .admin-card h3{font-size:14px;font-weight:600;color:var(--text2);margin-bottom:14px}
-  .addr-row{display:flex;gap:10px;margin-bottom:10px}
-  .addr-row input{flex:1;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:9px 12px;color:var(--text);font-size:12px;font-family:'Courier New',monospace;outline:none}
-  .addr-row input:focus{border-color:var(--green)}
-  .addr-row button{background:var(--green);border:none;border-radius:var(--radius);padding:9px 16px;color:#fff;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap}
-  .addr-row button:hover{background:#16856a}
-  .save-msg{font-size:12px;color:var(--green);margin-top:-6px;margin-bottom:10px;display:none}
-  .order-list{background:var(--bg2);border:1px solid var(--border);border-radius:12px;overflow:hidden}
-  .order-header{display:grid;grid-template-columns:1fr 1fr 80px 90px;gap:12px;padding:10px 16px;border-bottom:1px solid var(--border);font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px}
-  .order-row{display:grid;grid-template-columns:1fr 1fr 80px 90px;gap:12px;padding:12px 16px;border-bottom:1px solid var(--border);font-size:13px;align-items:center}
-  .order-row:last-child{border-bottom:none}
-  .order-status{display:inline-block;font-size:11px;padding:2px 8px;border-radius:20px;background:#1a3a2a;color:#3fb950;font-weight:600}
+    nav a:hover {
+      color: #60a5fa;
+    }
 
-  /* RESPONSIVE */
-  @media(max-width:600px){
-    nav{padding:0 16px}
-    .tabs{padding:0 16px}
-    .section,.wallet-section,.admin-section{padding:20px 16px}
-    .hero{padding:40px 16px 28px}
-    .hero h1{font-size:26px}
-    .pkg-grid{grid-template-columns:1fr}
-    .order-header,.order-row{grid-template-columns:1fr 80px 90px;font-size:12px}
-    .order-header .oh-user,.order-row .or-user{display:none}
-  }
-</style>
+    .container {
+      max-width: 1100px;
+      margin: auto;
+      padding: 40px 20px;
+    }
+
+    .notice {
+      background: #172554;
+      border: 1px solid #3b82f6;
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 30px;
+      color: #dbeafe;
+      line-height: 1.5;
+    }
+
+    .section-title {
+      font-size: 30px;
+      margin-bottom: 25px;
+      border-left: 5px solid #3b82f6;
+      padding-left: 12px;
+    }
+
+    .products {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 25px;
+      margin-bottom: 45px;
+    }
+
+    .card {
+      background: #1e293b;
+      border-radius: 15px;
+      padding: 25px;
+      text-align: center;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+      transition: 0.2s;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      background: #273449;
+    }
+
+    .card h3 {
+      font-size: 24px;
+      margin-bottom: 12px;
+      color: #93c5fd;
+    }
+
+    .card p {
+      color: #cbd5e1;
+      margin-bottom: 15px;
+      line-height: 1.5;
+    }
+
+    .gold h3 {
+      color: #facc15;
+    }
+
+    .diamond h3 {
+      color: #67e8f9;
+    }
+
+    .emerald h3 {
+      color: #34d399;
+    }
+
+    .cube h3 {
+      color: #c084fc;
+    }
+
+    .price {
+      font-size: 26px;
+      font-weight: bold;
+      color: #22c55e;
+      margin-bottom: 18px;
+    }
+
+    button {
+      background: #2563eb;
+      color: white;
+      border: none;
+      padding: 12px 18px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: 0.2s;
+    }
+
+    button:hover {
+      background: #1d4ed8;
+    }
+
+    .cart {
+      background: #020617;
+      border-radius: 15px;
+      padding: 25px;
+      margin-top: 20px;
+    }
+
+    .cart-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #334155;
+      padding: 12px 0;
+      gap: 10px;
+    }
+
+    .cart-total {
+      font-size: 22px;
+      font-weight: bold;
+      margin-top: 20px;
+      color: #22c55e;
+    }
+
+    .remove {
+      background: #ef4444;
+      padding: 7px 10px;
+      border-radius: 7px;
+    }
+
+    .remove:hover {
+      background: #dc2626;
+    }
+
+    .checkout-box {
+      margin-top: 30px;
+      background: #1e293b;
+      padding: 25px;
+      border-radius: 15px;
+    }
+
+    input {
+      width: 100%;
+      padding: 13px;
+      border-radius: 8px;
+      border: none;
+      margin: 8px 0 15px;
+      background: #334155;
+      color: white;
+      outline: none;
+    }
+
+    label {
+      color: #cbd5e1;
+      font-weight: bold;
+    }
+
+    .pay-paypal {
+      width: 100%;
+      background: #ffc439;
+      color: #111827;
+      font-size: 18px;
+      margin-top: 10px;
+    }
+
+    .pay-paypal:hover {
+      background: #fbbf24;
+    }
+
+    footer {
+      text-align: center;
+      padding: 25px;
+      background: #020617;
+      color: #94a3b8;
+      margin-top: 40px;
+    }
+  </style>
 </head>
+
 <body>
 
-<nav>
-  <div class="logo">⬡ <span class="accent">Craft</span>Store</div>
-  <div class="nav-right">
-    <div class="online-badge">
-      <span class="online-dot"></span>
-      <span id="online-count">247 online</span>
-    </div>
-    <button class="nav-btn" onclick="showTab('wallet')">
-      💰 <span id="nav-bal">$0.00</span>
-    </button>
-  </div>
-</nav>
+  <header>
+    <h1>CubexNova Store</h1>
+    <p>Buy ranks, and digital extras</p>
+  </header>
 
-<div id="view-store">
-  <div class="hero">
-    <div class="hero-icon">⚔️</div>
-    <h1>Upgrade your <span>Minecraft</span> experience</h1>
-    <p>Buy ranks and packages to support the server. Payments go directly to the owner via crypto.</p>
-    <div class="hero-stats">
-      <div class="hero-stat"><div class="hero-stat-val" id="h-orders">0</div><div class="hero-stat-label">Orders placed</div></div>
-      <div class="hero-stat"><div class="hero-stat-val" id="h-players">0</div><div class="hero-stat-label">Players served</div></div>
-      <div class="hero-stat"><div class="hero-stat-val">24/7</div><div class="hero-stat-label">Always online</div></div>
-    </div>
-  </div>
+  <nav>
+    <a href="#ranks">Ranks</a>
+    <a href="#other">Other</a>
+    <a href="#cart">Cart</a>
+  </nav>
 
-  <div class="tabs">
-    <div class="tab active" onclick="showTab('store')">Packages</div>
-    <div class="tab" onclick="showTab('wallet')">My wallet</div>
-    <div class="tab" onclick="showTab('admin')">Admin</div>
-  </div>
+  <div class="container">
 
-  <div class="section">
-    <div class="section-title">Ranks and packages</div>
-    <div class="pkg-grid" id="pkg-grid"></div>
-  </div>
-</div>
-
-<div id="view-wallet" style="display:none">
-  <div class="tabs">
-    <div class="tab" onclick="showTab('store')">Packages</div>
-    <div class="tab active" onclick="showTab('wallet')">My wallet</div>
-    <div class="tab" onclick="showTab('admin')">Admin</div>
-  </div>
-  <div class="wallet-section">
-    <div class="wallet-card">
-      <div class="wallet-total-label">Total received</div>
-      <div class="wallet-total" id="w-total">$0.00</div>
-      <div class="wallet-sub">All payments go directly to your crypto wallet</div>
-    </div>
-    <div class="tx-list">
-      <div class="tx-header">Recent transactions</div>
-      <div id="tx-list"><div class="empty">No transactions yet — purchases will appear here.</div></div>
-    </div>
-  </div>
-</div>
-
-<div id="view-admin" style="display:none">
-  <div class="tabs">
-    <div class="tab" onclick="showTab('store')">Packages</div>
-    <div class="tab" onclick="showTab('wallet')">My wallet</div>
-    <div class="tab active" onclick="showTab('admin')">Admin</div>
-  </div>
-  <div class="admin-section">
-    <div class="admin-stats">
-      <div class="admin-stat"><div class="admin-stat-label">Total revenue</div><div class="admin-stat-val" id="a-rev" style="color:var(--green)">$0.00</div></div>
-      <div class="admin-stat"><div class="admin-stat-label">Orders</div><div class="admin-stat-val" id="a-orders">0</div></div>
-      <div class="admin-stat"><div class="admin-stat-label">Players served</div><div class="admin-stat-val" id="a-players">0</div></div>
+    <div class="notice">
+      Current payment method: PayPal only. PayPal opens in a new tab.
+      After payment, manually check your PayPal account before giving the rank/item.
     </div>
 
-    <div class="admin-card">
-      <h3>Your USDT wallet address (TRC-20)</h3>
-      <div class="addr-row">
-        <input id="owner-usdt" value="PASTE_YOUR_USDT_TRC20_ADDRESS_HERE" />
-        <button onclick="saveAddr('usdt')">Save</button>
-      </div>
-      <div class="save-msg" id="save-usdt-msg">✓ Address saved</div>
-      <h3>Your BTC wallet address</h3>
-      <div class="addr-row">
-        <input id="owner-btc" value="PASTE_YOUR_BTC_ADDRESS_HERE" />
-        <button onclick="saveAddr('btc')">Save</button>
-      </div>
-      <div class="save-msg" id="save-btc-msg">✓ Address saved</div>
-      <p style="font-size:12px;color:var(--text3);line-height:1.6">
-        These are your real crypto wallet addresses. When a player buys a package, they send crypto directly to this address — no middleman, no fees.
-      </p>
-    </div>
+    <section id="ranks">
+      <h2 class="section-title">Ranks</h2>
 
-    <div class="order-list">
-      <div class="order-header">
-        <span>Package</span>
-        <span class="oh-user">Player</span>
-        <span>Amount</span>
-        <span>Status</span>
-      </div>
-      <div id="order-list-body"><div class="empty">No orders yet.</div></div>
-    </div>
-  </div>
-</div>
-
-<!-- CHECKOUT MODAL -->
-<div class="modal-overlay" id="modal">
-  <div class="modal">
-    <div id="modal-checkout">
-      <div class="modal-header">
-        <div class="modal-title" id="m-title">Buy package</div>
-        <button class="modal-close" onclick="closeModal()">×</button>
-      </div>
-
-      <div class="field-label">Your Minecraft username</div>
-      <input class="field-input" id="mc-user" placeholder="e.g. Steve" />
-
-      <div class="field-label">Pay with</div>
-      <div class="coin-grid">
-        <div class="coin-opt sel" id="c-usdt" onclick="selectCoin('usdt')">
-          <div class="coin-sym">₮</div>
-          <div class="coin-name">USDT</div>
-          <div class="coin-sub">TRC-20 network</div>
+      <div class="products">
+        <div class="card gold">
+          <h3>Gold Rank</h3>
+          <p>Includes a Gold rank title, profile badge, and special display color.</p>
+          <div class="price">$3.99</div>
+          <button onclick="addToCart('Gold Rank', 3.99)">Add to Cart</button>
         </div>
-        <div class="coin-opt" id="c-btc" onclick="selectCoin('btc')">
-          <div class="coin-sym">₿</div>
-          <div class="coin-name">Bitcoin</div>
-          <div class="coin-sub">BTC network</div>
+
+        <div class="card diamond">
+          <h3>Diamond Rank</h3>
+          <p>Includes a Diamond rank title, premium badge, and upgraded display style.</p>
+          <div class="price">$7.99</div>
+          <button onclick="addToCart('Diamond Rank', 7.99)">Add to Cart</button>
+        </div>
+
+        <div class="card emerald">
+          <h3>Emerald Rank</h3>
+          <p>Includes an Emerald rank title, exclusive badge, and custom profile look.</p>
+          <div class="price">$11.99</div>
+          <button onclick="addToCart('Emerald Rank', 11.99)">Add to Cart</button>
+        </div>
+
+        <div class="card cube">
+          <h3>Cube Rank</h3>
+          <p>Includes the Cube rank title, rare badge, and the highest display style.</p>
+          <div class="price">$15.99</div>
+          <button onclick="addToCart('Cube Rank', 15.99)">Add to Cart</button>
         </div>
       </div>
+    </section>
 
-      <div class="pay-box">
-        <div class="pay-box-label">Send to address</div>
-        <div class="pay-addr" id="m-addr">—</div>
-        <hr class="pay-divider">
-        <div class="pay-amount-row">
-          <div>
-            <div class="pay-amount" id="m-amt">—</div>
-            <div class="pay-usd" id="m-usd">≈ $0.00 USD</div>
-          </div>
-          <button class="copy-btn" id="copy-btn" onclick="copyAddr()">
-            📋 Copy address
-          </button>
+    <section id="other">
+      <h2 class="section-title">Other</h2>
+
+      <div class="products">
+        <div class="card">
+          <h3>Guild Create</h3>
+          <p>Unlock the ability to create your own guild.</p>
+          <div class="price">$9.99</div>
+          <button onclick="addToCart('Guild Create', 9.99)">Add to Cart</button>
         </div>
       </div>
+    </section>
 
-      <div class="status-bar">
-        <span class="status-pulse"></span>
-        Waiting for payment on-chain...
+    <section id="cart">
+      <h2 class="section-title">Your Cart</h2>
+
+      <div class="cart">
+        <div id="cartItems"></div>
+        <div class="cart-total">Total: $<span id="cartTotal">0.00</span></div>
       </div>
 
-      <button class="confirm-btn" onclick="confirmPayment()">
-        ✓ I've sent the payment
-      </button>
-      <p class="modal-note">Send the exact amount shown. Your rank will be applied within 5 minutes of confirmation.</p>
-    </div>
-
-    <div id="modal-success" style="display:none">
-      <div class="success-screen">
-        <div class="success-icon">🎉</div>
-        <div class="success-title">Payment received!</div>
-        <div class="success-sub">
-          Thanks <strong id="s-user">Steve</strong>!<br>
-          Your <strong id="s-pkg">VIP rank</strong> will be applied within 5 minutes.<br><br>
-          <span style="color:var(--text3)">Join the server: <strong style="color:var(--text)">play.yourserver.net</strong></span>
-        </div>
+      <div class="checkout-box">
+        <h2>Checkout Details</h2>
         <br>
-        <button class="confirm-btn" onclick="closeModal()" style="margin-top:8px">Close</button>
+
+        <label>Game Username</label>
+        <input type="text" id="username" placeholder="Enter your game username">
+
+        <label>Email</label>
+        <input type="email" id="email" placeholder="Enter your email">
+
+        <button class="pay-paypal" onclick="checkoutPayPal()">
+          Pay with PayPal
+        </button>
       </div>
-    </div>
+    </section>
+
   </div>
-</div>
 
-<script>
-const PACKAGES = [
-  {id:'vip',name:'VIP',icon:'⚔️',desc:'Entry rank with chat color and spawn fly.',perks:['Green chat color','Fly in spawn','/kit vip (daily)','Join full server'],price:4.99,usdt:4.99,btc:0.000055,featured:false},
-  {id:'mvp',name:'MVP',icon:'🛡️',desc:'Most popular rank — fly everywhere and extra perks.',perks:['Gold chat color','Fly everywhere','/kit mvp (daily)','2× XP boost','Priority queue','Discord role'],price:9.99,usdt:9.99,btc:0.00011,featured:true},
-  {id:'legend',name:'Legend',icon:'👑',desc:'Top rank with full access and exclusive perks.',perks:['Red chat color','Creative mode','/kit legend (daily)','5× XP boost','Private warp','Discord Legend role','Early access to updates'],price:19.99,usdt:19.99,btc:0.00022,featured:false},
-  {id:'coins500',name:'500 coins',icon:'🪙',desc:'In-game currency for the /shop.',perks:['500 CraftCoins','/coins balance','Use in /shop','Never expires'],price:2.99,usdt:2.99,btc:0.000033,featured:false},
-  {id:'coins1500',name:'1500 coins',icon:'💰',desc:'Best value coin bundle.',perks:['1500 CraftCoins','Bonus 200 coins','Use in /shop','Never expires'],price:6.99,usdt:6.99,btc:0.000077,featured:false},
-  {id:'kit',name:'Starter kit',icon:'🎒',desc:'One-time starter pack to get ahead.',perks:['Full diamond armor','32× golden apples','64× steak','Beginner map'],price:1.99,usdt:1.99,btc:0.000022,featured:false},
-];
+  <footer>
+    © 2026 CubexNova Store. All rights reserved.
+  </footer>
 
-let walletAddr = {
-  usdt: localStorage.getItem('owner_usdt') || 'PASTE_YOUR_USDT_TRC20_ADDRESS_HERE',
-  btc:  localStorage.getItem('owner_btc')  || 'PASTE_YOUR_BTC_ADDRESS_HERE'
-};
-let orders = JSON.parse(localStorage.getItem('orders') || '[]');
-let selectedCoin = 'usdt';
-let currentPkg = null;
+  <script>
+    let cart = [];
 
-function init(){
-  renderPackages();
-  renderOrders();
-  updateStats();
-  document.getElementById('owner-usdt').value = walletAddr.usdt;
-  document.getElementById('owner-btc').value = walletAddr.btc;
-}
+    const PAYPAL_BASE_LINK = "https://www.paypal.com/paypalme/MohammedAlshboul689";
 
-function renderPackages(){
-  document.getElementById('pkg-grid').innerHTML = PACKAGES.map(p=>`
-    <div class="pkg${p.featured?' featured':''}">
-      <div class="pkg-top">
-        <div class="pkg-icon">${p.icon}</div>
-        ${p.featured?'<span class="pkg-badge">Most popular</span>':''}
-      </div>
-      <h3>${p.name}</h3>
-      <p class="pkg-desc">${p.desc}</p>
-      <ul class="pkg-perks">${p.perks.map(k=>`<li>${k}</li>`).join('')}</ul>
-      <div class="pkg-footer">
-        <div class="pkg-price">$${p.price.toFixed(2)} <small>USD</small></div>
-        <button class="buy-btn" onclick="openModal('${p.id}')">Buy now</button>
-      </div>
-    </div>`).join('');
-}
+    function addToCart(name, price) {
+      cart.push({ name, price });
+      updateCart();
+    }
 
-function openModal(id){
-  currentPkg = PACKAGES.find(p=>p.id===id);
-  document.getElementById('m-title').textContent = 'Buy ' + currentPkg.name;
-  document.getElementById('mc-user').value = '';
-  selectedCoin = 'usdt';
-  document.getElementById('c-usdt').classList.add('sel');
-  document.getElementById('c-btc').classList.remove('sel');
-  updatePayUI();
-  document.getElementById('modal-checkout').style.display = '';
-  document.getElementById('modal-success').style.display = 'none';
-  document.getElementById('modal').classList.add('open');
-}
+    function removeFromCart(index) {
+      cart.splice(index, 1);
+      updateCart();
+    }
 
-function closeModal(){
-  document.getElementById('modal').classList.remove('open');
-}
+    function updateCart() {
+      const cartItems = document.getElementById("cartItems");
+      const cartTotal = document.getElementById("cartTotal");
 
-function selectCoin(c){
-  selectedCoin = c;
-  document.getElementById('c-usdt').classList.toggle('sel', c==='usdt');
-  document.getElementById('c-btc').classList.toggle('sel', c==='btc');
-  updatePayUI();
-}
+      cartItems.innerHTML = "";
 
-function updatePayUI(){
-  if(!currentPkg) return;
-  const addr = walletAddr[selectedCoin];
-  document.getElementById('m-addr').textContent = addr;
-  if(selectedCoin==='usdt'){
-    document.getElementById('m-amt').textContent = currentPkg.usdt.toFixed(2)+' USDT';
-  } else {
-    document.getElementById('m-amt').textContent = currentPkg.btc.toFixed(6)+' BTC';
-  }
-  document.getElementById('m-usd').textContent = '≈ $'+currentPkg.price.toFixed(2)+' USD';
-}
+      let total = 0;
 
-function copyAddr(){
-  const addr = walletAddr[selectedCoin];
-  navigator.clipboard && navigator.clipboard.writeText(addr);
-  const btn = document.getElementById('copy-btn');
-  btn.textContent = '✓ Copied!';
-  btn.classList.add('copied');
-  setTimeout(()=>{btn.textContent='📋 Copy address';btn.classList.remove('copied');},2000);
-}
+      if (cart.length === 0) {
+        cartItems.innerHTML = "<p>Your cart is empty.</p>";
+      }
 
-function confirmPayment(){
-  const user = document.getElementById('mc-user').value.trim() || 'Unknown';
-  const order = {
-    id: Date.now(),
-    pkg: currentPkg.name,
-    user,
-    amount: currentPkg.price,
-    coin: selectedCoin.toUpperCase(),
-    time: new Date().toISOString()
-  };
-  orders.unshift(order);
-  localStorage.setItem('orders', JSON.stringify(orders));
-  document.getElementById('s-user').textContent = user;
-  document.getElementById('s-pkg').textContent = currentPkg.name;
-  document.getElementById('modal-checkout').style.display = 'none';
-  document.getElementById('modal-success').style.display = '';
-  renderOrders();
-  updateStats();
-}
+      cart.forEach((item, index) => {
+        total += item.price;
 
-function renderOrders(){
-  const total = orders.reduce((s,o)=>s+o.amount,0);
-  document.getElementById('w-total').textContent = '$'+total.toFixed(2);
-  document.getElementById('nav-bal').textContent = '$'+total.toFixed(2);
+        cartItems.innerHTML += `
+          <div class="cart-item">
+            <span>${item.name} - $${item.price.toFixed(2)}</span>
+            <button class="remove" onclick="removeFromCart(${index})">Remove</button>
+          </div>
+        `;
+      });
 
-  const txEl = document.getElementById('tx-list');
-  if(!orders.length){txEl.innerHTML='<div class="empty">No transactions yet — purchases will appear here.</div>';return;}
-  txEl.innerHTML = orders.map(o=>{
-    const d = new Date(o.time);
-    const t = d.toLocaleDateString()+' '+d.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
-    return `<div class="tx-item">
-      <div class="tx-left"><div class="tx-pkg">${o.pkg}</div><div class="tx-meta">from ${o.user} · ${t}</div></div>
-      <div class="tx-right"><div class="tx-amt">+$${o.amount.toFixed(2)}</div><div class="tx-coin">${o.coin}</div></div>
-    </div>`;
-  }).join('');
+      cartTotal.textContent = total.toFixed(2);
+    }
 
-  const orderEl = document.getElementById('order-list-body');
-  orderEl.innerHTML = orders.map(o=>`
-    <div class="order-row">
-      <span>${o.pkg}</span>
-      <span class="or-user" style="color:var(--text2)">${o.user}</span>
-      <span style="color:#3fb950;font-weight:700">$${o.amount.toFixed(2)}</span>
-      <span><span class="order-status">Confirmed</span></span>
-    </div>`).join('');
-}
+    function validateCheckout() {
+      const username = document.getElementById("username").value.trim();
+      const email = document.getElementById("email").value.trim();
 
-function updateStats(){
-  const total = orders.reduce((s,o)=>s+o.amount,0);
-  const players = [...new Set(orders.map(o=>o.user))].length;
-  document.getElementById('a-rev').textContent = '$'+total.toFixed(2);
-  document.getElementById('a-orders').textContent = orders.length;
-  document.getElementById('a-players').textContent = players;
-  document.getElementById('h-orders').textContent = orders.length;
-  document.getElementById('h-players').textContent = players;
-}
+      if (cart.length === 0) {
+        alert("Your cart is empty.");
+        return false;
+      }
 
-function saveAddr(type){
-  const val = document.getElementById('owner-'+type).value.trim();
-  if(!val) return;
-  walletAddr[type] = val;
-  localStorage.setItem('owner_'+type, val);
-  const msg = document.getElementById('save-'+type+'-msg');
-  msg.style.display = 'block';
-  setTimeout(()=>msg.style.display='none', 2500);
-}
+      if (!username || !email) {
+        alert("Please enter your game username and email.");
+        return false;
+      }
 
-function showTab(t){
-  document.getElementById('view-store').style.display = t==='store'?'':'none';
-  document.getElementById('view-wallet').style.display = t==='wallet'?'':'none';
-  document.getElementById('view-admin').style.display = t==='admin'?'':'none';
-}
+      return true;
+    }
 
-document.getElementById('modal').addEventListener('click', function(e){
-  if(e.target===this) closeModal();
-});
+    function getOrderSummary() {
+      const username = document.getElementById("username").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const total = cart.reduce((sum, item) => sum + item.price, 0);
+      const products = cart.map(item => item.name).join(", ");
 
-init();
-</script>
+      return {
+        username,
+        email,
+        total: total.toFixed(2),
+        products
+      };
+    }
+
+    function checkoutPayPal() {
+      if (!validateCheckout()) return;
+
+      const order = getOrderSummary();
+
+      const paypalUrl = PAYPAL_BASE_LINK + "/" + order.total;
+
+      /*
+        PayPal refuses to load inside some previews/iframes.
+        Opening in a new tab fixes the "refused to connect" error.
+      */
+      window.open(paypalUrl, "_blank", "noopener,noreferrer");
+
+      alert(
+        "PayPal opened in a new tab.\n\n" +
+        "Username: " + order.username + "\n" +
+        "Email: " + order.email + "\n" +
+        "Products: " + order.products + "\n" +
+        "Total: $" + order.total + "\n\n" +
+        "After paying, include your username in the PayPal note if possible."
+      );
+    }
+
+    updateCart();
+  </script>
+
 </body>
 </html>
